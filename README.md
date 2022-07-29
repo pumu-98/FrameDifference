@@ -1,0 +1,3 @@
+- Install FastAPI using `pip3 install "fastapi[all]"`
+- Run the application `uvicorn main:app --reload`
+- Open the application `http://127.0.0.1:8000/docs`
