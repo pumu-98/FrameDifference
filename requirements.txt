@@ -105,7 +105,6 @@ python-jwt
 python-multipart 
 python-slugify 
 pytz 
-pywin32 
 PyYAML 
 regex 
 requests 
