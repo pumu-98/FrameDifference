@@ -1,14 +1,14 @@
 from pyrebase import pyrebase
 
 firebaseConfig = {
-  "projectId": "temp-fastapi",
-  "apiKey": "AIzaSyAwLxbgLHrxD5H8ngdOdeDW7gwozUNBn-Y",
-  "authDomain": "temp-fastapi.firebaseapp.com",
+  "projectId": "temp-fastapi-7b328",
+  "apiKey": "AIzaSyDaPoiao4FyQaS1GktPCZ-mtkoiSdhSuoY",
+  "authDomain": "temp-fastapi-7b328.firebaseapp.com",
   "databaseURL": "https://temp-fastapi.firebaseio.com",
-  "storageBucket": "temp-fastapi.appspot.com",
-  "messagingSenderId": "276121432901",
-  "appId": "1:276121432901:web:a8712f97f6a735679e442c",
-  "measurementId": "G-ZH2D51TR7P",
+  "storageBucket": "temp-fastapi-7b328.appspot.com",
+  "messagingSenderId": "1061926035437",
+  "appId": "1:1061926035437:web:7b90ceebe36eec9f7011e4",
+  "measurementId": "G-N7SNCFGBHE",
   "serviceAccount": "serviceAccountCredentials.json"
 }
 
