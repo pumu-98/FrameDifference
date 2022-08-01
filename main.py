@@ -2,6 +2,7 @@ import json
 import os
 import cv2
 import requests
+import pymysql
 from typing import List
 from fastapi import FastAPI, File, UploadFile
 from config.firebase import firebase
@@ -29,6 +30,7 @@ async def root():
 @app.post("/make-frame")
 async def uploadVideo(files: List[UploadFile] = File(...)):
   links = []
+  
   for i, file in enumerate(files):
     try:
       contents = await file.read()
@@ -80,6 +82,7 @@ def create_dir(path):
     print(f"ERROR: creating directory with name {path}")
 
 def save_frame(path, file_name, dir, gap=50):
+  con = pymysql.connect(host="localhost",user="root",password="",db="drug_alcohol")
   save_path = os.path.join(dir, file_name)
   create_dir(save_path)
   url = "https://eastus.api.cognitive.microsoft.com/customvision/v3.0/Prediction/67eb6bde-6855-4c6b-b555-006f273e9239/detect/iterations/Iteration1/image"
@@ -103,11 +106,15 @@ def save_frame(path, file_name, dir, gap=50):
         maxProbability = 0
         tagName = ""
         for pred in predictions:
+          
           if (pred["probability"] > maxProbability):
             maxProbability = pred["probability"]
             tagName = pred["tagName"]
         
         print(maxProbability)
+        cursor=con.cursor()
+        cursor.execute("insert into predicted_data(tagName,maxProbability) value(%s,%s)", (tagName,maxProbability))
+        con.commit()
         print(tagName)
         # print(data["predictions"])
         os.unlink(f"{save_path}/{idx}.png")
@@ -122,16 +129,46 @@ def save_frame(path, file_name, dir, gap=50):
           maxProbability = 0
           tagName = ""
           for pred in predictions:
+            
+            
             if (pred["probability"] > maxProbability):
               maxProbability = pred["probability"]
               tagName = pred["tagName"]
           
+
+           
+          
+          
+          
+
           print(maxProbability)
+          cursor=con.cursor()
+          cursor.execute("insert into predicted_data(tagName,maxProbability) value(%s,%s)", (tagName,maxProbability))
+          con.commit()
           print(tagName)
           # print(data["predictions"])
           os.unlink(f"{save_path}/{idx}.png")
 
     idx += 1
+  con.close()
+
+
+@app.get("/pred")
+async def getPredictions():
+  con = pymysql.connect(host="localhost",user="root",password="",db="drug_alcohol")
+  cursor=con.cursor()
+  cursor.execute("select * from predicted_data")
+  result = cursor.fetchall()
+
+  print(result)
+
+  return result
+  
+
+
+   
+    
+
 
   # api call -> /
   # https://eastus.api.cognitive.microsoft.com/customvision/v3.0/Prediction/67eb6bde-6855-4c6b-b555-006f273e9239/detect/iterations/Iteration1/image
@@ -145,3 +182,5 @@ def save_frame(path, file_name, dir, gap=50):
 #       blob.make_public()
 #       link = blob.public_url
 #       print(link)
+
+ 
