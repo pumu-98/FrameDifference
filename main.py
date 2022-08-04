@@ -30,7 +30,7 @@ async def root():
 @app.post("/make-frame")
 async def uploadVideo(files: List[UploadFile] = File(...)):
   links = []
-  
+  con = pymysql.connect(host="localhost",user="root",password="",db="drug_alcohol")
   for i, file in enumerate(files):
     try:
       contents = await file.read()
@@ -51,16 +51,37 @@ async def uploadVideo(files: List[UploadFile] = File(...)):
   
   try:
     for link in links:
-      data = {"link": link.link, "name": link.name}
-      file_ref.document().set(data)
+     
+      # data = {"link": link.link, "name": link.name}
+      # file_ref.document().set(data)
+       
+      name = link.name
+      link= link.link
+      cursor=con.cursor()
+      cursor.execute("insert into files(name,link) value(%s,%s)", (name,link))
+      con.commit()
+      print(name)
+
   except Exception as err:
     return {"error": str(err)}
 
   try:
     file_links = []
-    docs = db.collection(u"file_links").stream()
+    # docs = db.collection(u"file_links").stream()
+     
+    cursor=con.cursor()
+    cursor.execute("select id, name, link from files")
+    docs = cursor.fetchall()
+
+    #print(docs)
     
     for doc in docs:
+      itemArr = list(doc)
+      print(itemArr[0])
+      print(itemArr[1])
+      print(itemArr[2])
+
+
       data = { "id": doc.id, "file": doc.to_dict() }
       file_links.append(data)
 
@@ -91,7 +112,7 @@ def save_frame(path, file_name, dir, gap=50):
   
   while True:
     ret, frame = cap.read()
-
+    # print(ret)
     if ret == False:
       cap.release()
       break
@@ -116,6 +137,7 @@ def save_frame(path, file_name, dir, gap=50):
         cursor.execute("insert into predicted_data(tagName,maxProbability) value(%s,%s)", (tagName,maxProbability))
         con.commit()
         print(tagName)
+        file.close()
         # print(data["predictions"])
         os.unlink(f"{save_path}/{idx}.png")
     else:
@@ -146,6 +168,7 @@ def save_frame(path, file_name, dir, gap=50):
           cursor.execute("insert into predicted_data(tagName,maxProbability) value(%s,%s)", (tagName,maxProbability))
           con.commit()
           print(tagName)
+          file.close()
           # print(data["predictions"])
           os.unlink(f"{save_path}/{idx}.png")
 
