@@ -21,7 +21,7 @@ file_ref = db.collection("file_links")
 db = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="RavB1998",
+  password="",
   database="frames_db"
 )
 
