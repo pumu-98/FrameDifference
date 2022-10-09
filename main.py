@@ -110,7 +110,7 @@ def create_dir(path):
 def save_frame(video_id, path, file_name, dir, gap=50):
   save_path = os.path.join(dir, file_name)
   create_dir(save_path)
-  url = "https://eastus.api.cognitive.microsoft.com/customvision/v3.0/Prediction/67eb6bde-6855-4c6b-b555-006f273e9239/detect/iterations/Iteration1/image"
+  url = "https://eastus.api.cognitive.microsoft.com/customvision/v3.0/Prediction/6d731025-c132-46d5-964e-2726dbdb9055/classify/iterations/Iteration1/image"
   cap = cv2.VideoCapture(path)
   idx = 0
   
@@ -123,7 +123,7 @@ def save_frame(video_id, path, file_name, dir, gap=50):
     if idx == 0:
       cv2.imwrite(f"{save_path}/{idx}.png", frame)
       with open(f"{save_path}/{idx}.png", "rb") as file:
-        headers = {'content-type': 'application/octet-stream', 'Prediction-Key': '154db301ad6844bca3dfcf20cf246a61'}
+        headers = {'content-type': 'application/octet-stream', 'Prediction-Key': '1b1dcc173ede4e178b317680be894056'}
         response = requests.post(url, data=file, headers=headers)
         data = json.loads(response.text)
         predictions = data["predictions"]
@@ -150,7 +150,7 @@ def save_frame(video_id, path, file_name, dir, gap=50):
       if idx % gap == 0:
         cv2.imwrite(f"{save_path}/{idx}.png", frame)
         with open(f"{save_path}/{idx}.png", "rb") as file:
-          headers = {'content-type': 'application/octet-stream', 'Prediction-Key': '154db301ad6844bca3dfcf20cf246a61'}
+          headers = {'content-type': 'application/octet-stream', 'Prediction-Key': '1b1dcc173ede4e178b317680be894056'}
           response = requests.post(url, data=file, headers=headers)
           data = json.loads(response.text)
           predictions = data["predictions"]
